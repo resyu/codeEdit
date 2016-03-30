@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=gb2312" />
+	<title>codeEdit</title>
+	<link rel=stylesheet href="doc/docs.css">
+	<link rel="stylesheet" href="lib/codemirror.css">
+	<link rel="stylesheet" href="theme/eclipse.css">
+    <link rel="stylesheet" href="addon/fold/foldgutter.css" />
+	<link  rel="stylesheet" type="text/css" href="lib/Edit.css"/>
+	<link rel="stylesheet" href="addon/hint/show-hint.css">
+	
+	<script type="text/javascript" src="lib/jquery.min.js" ></script>
+    <script src="lib/codemirror.js"></script>
+	<script src="mode/css/css.js"></script>
+	<script src="mode/htmlmixed/htmlmixed.js"></script>
+	<script type="text/javascript" src="lib/Edit.js" ></script>
+	<script type="text/javascript" src="dist/emmet.js" ></script>
+	<script src="addon/edit/closetag.js"></script>
+    <script src="addon/fold/xml-fold.js"></script>
+    <script src="addon/selection/active-line.js"></script>
+    <script src="addon/edit/matchbrackets.js"></script>
+    <script src="addon/fold/foldcode.js"></script>
+    <script src="addon/fold/foldgutter.js"></script>
+    <script src="addon/fold/brace-fold.js"></script>
+    <script src="addon/fold/markdown-fold.js"></script>
+    <script src="addon/fold/comment-fold.js"></script>
+    <script src="addon/hint/anyword-hint.js"></script>
+    <script src="addon/hint/xml-hint.js"></script>
+    <script src="addon/hint/javascript-hint.js"></script>
+    <script src="addon/hint/html-hint.js"></script>
+    <script src="addon/hint/show-hint.js"></script>
+    <script src="mode/javascript/javascript.js"></script>
+    <script src="mode/xml/xml.js"></script>
+    <script src="mode/markdown/markdown.js"></script>
+    <script src="addon/edit/matchtags.js"></script>
+    <script src="addon/search/match-highlighter.js"></script>
+    <script src="mode/htmlmixed/htmlmixed.js"></script>
+    <script src="addon/dialog/dialog.js"></script>
+    <script src="addon/search/searchcursor.js"></script>
+    <script src="mode/clike/clike.js"></script>
+    <script src="keymap/vim.js"></script>
+    <style type="text/css">
+      .CodeMirror-focused .cm-matchhighlight {
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVQI12NgYGBgkKzc8x9CMDAwAAAmhwSbidEoSQAAAABJRU5ErkJggg==);
+        background-position: bottom;
+        background-repeat: repeat-x;
+      }
+      iframe {
+        width: 99.8%;
+        height: 49.9%;
+        position:absolute;
+        top:50%;
+        border:none;
+        border-top:1px solid #e2e2e2;
+      }
+    </style>
+</head>
+<body>
+<textarea id="code" name="code" autofocus></textarea>
+<div style="position: absolute;bottom:10px;left:0;z-index:999;line-height:0px;height:12px;"><a href="emmetSyntax/Syntax.html" target="_blank"><span style="font-size: 11px;height: 11px;line-height: 11px;color: #666;cursor: pointer;">E</span></a></div>
+<div style="position: absolute;bottom:0;left:0;z-index:999;line-height:0px;height:12px;"><span style="font-size: 11px;height: 11px;line-height: 11px;color: #666;cursor: pointer;" onclick="javascript:$('#help_pre').toggle();">T</span></div>
+	<script>
+		  if(localStorage.str){
+	     document.getElementById("code").innerHTML=localStorage.str;
+	  }else{
+	     document.getElementById("code").innerHTML='';
+	  }
+		CodeMirror.commands.save = function(){ alert("Saving"); };
+		var delay;
+		var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+			mode : "text/html",
+			lineNumbers : true,
+			lineWrapping: true,
+			profile: 'xhtml', /* define Emmet output profile */
+			autoCloseTags: true,
+			styleActiveLine: true,
+            matchBrackets: true,
+            theme: "eclipse",
+            foldGutter: true,
+            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+            matchTags: {bothTags: true},
+            extraKeys: {"Ctrl-Q": "toMatchingTag"},
+            highlightSelectionMatches: {showToken: /\w/},
+            showCursorWhenSelecting: true
+		});
+        emmetCodeMirror(editor);
+      editor.on("change", function() {
+        clearTimeout(delay);
+        localStorage.str=editor.getValue();
+        delay = setTimeout(updatePreview(), 1000);
+
+      });
+      function updatePreview() {
+        document.onkeyup=function(e){
+        var e=e||window.event;
+        var kc=e.keyCode||e.charCode;
+        if((kc>64&&kc<91)||(kc==110||kc==190)){
+        //editor.showHint({hint: CodeMirror.hint.anyword});
+        editor.showHint();
+           }
+         }
+        var previewFrame = document.getElementById('preview');
+        var preview =  previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+        preview.open();
+        preview.write(editor.getValue());
+        preview.close();
+      }   
+      setTimeout(updatePreview, 1000);
+	</script>
+<div id="help_pre" style="display:none;position: absolute;background: #555;color: #fff;left: 30%;top:20%;z-index: 9999999;padding:35px;height:400px;overflow-y:auto;">
+	<p style="position: absolute;right: 22px;top:14px;cursor:pointer" onclick="javascript:$('#help_pre').toggle();">X</p>
+<pre>
+This textareas on this page are powered by Emmet toolkit.
+
+Available shortcuts:
+Ctrl+E — Expand Abbreviation
+Ctrl+D — Match Pair Tag (outward)
+Shift+Ctrl+D — Match Pair Tag (inward)
+Shift+Ctrl+A — Wrap With Abbreviation
+Ctrl+Alt+→ — Next Edit Point
+Ctrl+Alt+← — Previous Edit Point
+Ctrl+L — Select Line
+Ctrl+Shift+M — Merge Lines
+Ctrl+/ — Toggle Comment
+Ctrl+J — Split\Join Tag Declaration
+Ctrl+K — Remove Tag
+Shift+Ctrl+Y — Evaluate Math Expression
+Ctrl+↑ — Increment number by 1
+Ctrl+↓ — Decrement number by 1
+Alt+↑ — Increment number by 0.1
+Alt+↓ — Decrement number by 0.1
+Ctrl+Alt+↑ — Increment number by 10
+Ctrl+Alt+↓ — Decrement number by 10
+Ctrl+. — Select Next Item
+Ctrl+, — Select Previous Item
+Ctrl+Shift+B — Reflect Value
+
+More info on http://emmet.io/
+</pre>
+</div>
+<iframe id=preview></iframe>
+</body>
+</html>

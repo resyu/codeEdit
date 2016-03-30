@@ -1,0 +1,18 @@
+body{
+	background: #FBF9F9;
+}
+.CodeMirror{
+	font-family: 'Consolas','Courier' !important;
+	border: 0;
+	margin: 0;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 1 !important;
+	width:100%;
+	height: 50% !important;
+ }
+.CodeMirror-scroll{
+	font-size: 18px;
+}
+.CodeMirror-dialog.CodeMirror-dialog-bottom{position: absolute;z-index: 9999999;bottom:0;left:46px;}
